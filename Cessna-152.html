@@ -1,0 +1,189 @@
+<html>
+    <head>
+        <title>Cessna C152 Weight & Balance</title>
+        <script src="https://cdn.plot.ly/plotly-1.58.4.min.js"></script>
+    </head>
+    <body>
+        <div>
+            <table>
+                <tr>
+                    <td colspan="3">Aircraft Data</td>
+                </tr>
+                <tr>
+                    <td>Call Sign</td>
+                    <td>Basic Empty Weight (lbs)</td>
+                    <td>Center of Mass (Inch)</td>
+                    <td>Moment (Inch-lbs/1000)</td>
+                    <td>Latest Update</td>
+                </tr>
+                <tr>
+                    <td>4X-CSN</td>
+                    <td>1205</td>
+                    <td>31.25</td>
+                    <td>37.656</td>
+                    <td>01/01/2021</td>
+                </tr>
+                <tr>
+                    <td colspan="3">Load Data</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Weight (lbs)</td>
+                    <td>Units</td>
+                    <td>Arm (Inch)</td>
+                    <td>Moment (Inch-lbs/1000)</td>
+                </tr>
+                <tr>
+                    <td>Pilot</td>
+                    <td></td>
+                    <td>lbs</td>
+                    <td>39.0</td>
+                    <td>39.0</td>
+                </tr>
+                <tr>
+                    <td>Passenger 1</td>
+                    <td></td>
+                    <td>lbs</td>
+                    <td>39.0</td>
+                    <td>39.0</td>
+                </tr>
+                <tr>
+                    <td>Area 1 / Child Seat</td>
+                    <td></td>
+                    <td>lbs</td>
+                    <td>64.0</td>
+                    <td>64.0</td>
+                </tr>
+                <tr>
+                    <td>Area 2</td>
+                    <td></td>
+                    <td>lbs</td>
+                    <td>84.0</td>
+                    <td>84.0</td>
+                </tr>
+                <tr>
+                    <td>Fuel</td>
+                    <td></td>
+                    <td>US Gallon</td>
+                    <td>42.0</td>
+                    <td>42.0</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div>
+            <p>Center-of-Gravity Limits</p>
+            <div id="pltAirplaneCGLocation" style="width:600px;height:400px;"></div>
+
+            <script>
+                airplaneCGEnvelope_C152 = {
+                    type: 'scatter',
+                    x: [31, 31, 32.65, 36.5, 36.5, 31],
+                    y: [1000, 1300, 1670, 1670, 1000, 1000],
+                };
+
+                var layout = {
+                    title: 'Cessna C152 - C.G. Limits',
+                    xaxis: {
+                        title: 'Cessna C152 - C.G. Location-Inches Aft of Datum',
+                        range: [30, 37],
+                        tickmode: 'linear',
+                        tick0: 30,
+                        dtick: 1
+                    },
+                    yaxis: {
+                        title: 'Loaded Airplane Weight (Pounds)',
+                        range: [1000, 1800],
+                        tickmode: 'linear',
+                        tick0: 1000,
+                        dtick: 100
+                    }
+                };
+
+                pltAirplaneCGLocation = Plotly.newPlot('pltAirplaneCGLocation', [airplaneCGEnvelope_C152], layout);
+            </script>
+        </div>
+
+        <div>
+            <p>Center-of-Gravity Moment Envelope</p>
+            <div id="pltAirplaneCGMomentEnvelope" style="width:600px;height:400px;"></div>
+
+            <script>
+                airplaneCGMomentEnvelope_C152 = {
+                    type: 'scatter',
+                    x: [31, 54.5, 61, 36.5],
+                    y: [1000, 1670, 1670, 1000],
+                };
+
+                var layout = {
+                    title: 'Cessna C152 - C.G. Moment Envelope',
+                    xaxis: {
+                        title: 'Loaded Airplane Moment/1000 (Pound-Inches)',
+                        range: [30, 65],
+                        tickmode: 'linear',
+                        tick0: 30,
+                        dtick: 5
+                    },
+                    yaxis: {
+                        title: 'Loaded Airplane Weight (Pounds)',
+                        range: [1000, 1800],
+                        tickmode: 'linear',
+                        tick0: 1000,
+                        dtick: 100
+                    }
+                };
+
+                pltAirplaneCGMomentEnvelope = Plotly.newPlot('pltAirplaneCGMomentEnvelope', [airplaneCGMomentEnvelope_C152], layout);
+            </script>
+        </div>
+
+        <div>
+            <p>Loading Graph</p>
+            <div id="pltAirplaneLoadingGraph" style="width:600px;height:400px;"></div>
+
+            <script>
+                pilotPassengerAndLongRangeFuelTanksLoadGraph_C152 = {
+                    type: 'scatter',
+                    x: [0, 15.5],
+                    y: [0, 400],
+                };
+                fuelTanksLoadGraph_C152 = {
+                    type: 'scatter',
+                    x: [0, 6.2],
+                    y: [0, 150],
+                };
+                area1LoadGraph_C152 = {
+                    type: 'scatter',
+                    x: [0, 7.7],
+                    y: [0, 120],
+                };
+                area2LoadGraph_C152 = {
+                    type: 'scatter',
+                    x: [0, 3.3],
+                    y: [0, 40],
+                };
+
+                var layout = {
+                    title: 'Cessna C152 - Loading Graph',
+                    xaxis: {
+                        title: 'Load Moment/1000 (Pound-Inches)',
+                        range: [0, 16],
+                        tickmode: 'linear',
+                        tick0: 0,
+                        dtick: 1
+                    },
+                    yaxis: {
+                        title: 'Load Weight (Pounds)',
+                        range: [0, 500],
+                        tickmode: 'linear',
+                        tick0: 0,
+                        dtick: 50
+                    }
+                };
+
+                pltAirplaneLoadingGraph = Plotly.newPlot('pltAirplaneLoadingGraph', 
+                    [pilotPassengerAndLongRangeFuelTanksLoadGraph_C152, fuelTanksLoadGraph_C152, area1LoadGraph_C152, area2LoadGraph_C152], layout);
+            </script>
+        </div>
+    </body>
+</html>
