@@ -2,6 +2,17 @@
     <head>
         <title>Cessna C152 Weight & Balance</title>
         <script src="https://cdn.plot.ly/plotly-1.58.4.min.js"></script>
+        <script>
+            var aircraftArmData = {
+                'C152': {
+                    'pilot': 39.0,
+                    'passenger1': 39.0,
+                    'area1': 64.0,
+                    'area2': 84.0,
+                    'fuel': 42.0
+                },
+            };
+        </script>
     </head>
     <body>
         <div>
@@ -208,4 +219,29 @@
             </script>
         </div>
     </body>
+    <script>
+        var btnCalculate = document.getElementById('btnCalculate');
+        btnCalculate.addEventListener('click', function() {
+            // Compute total moment and mass, check if inside envelope.
+            // For C152.
+            if (true) {
+                var loadData = {
+                    'pilot': Number(document.getElementById('txtPilotWeight').value),
+                    'passenger1': Number(document.getElementById('txtPassenger1Weight').value),
+                    'area1': Number(document.getElementById('txtArea1Weight').value),
+                    'area2': Number(document.getElementById('txtArea2Weight').value),
+                    'fuel': Number(document.getElementById('txtFuelWeight').value),
+                };
+
+                var sum = 0.0;
+                for (const key in loadData) {
+                    if (Number.isFinite(loadData[key])) {
+                        sum += loadData[key] * aircraftArmData['C152'][key];
+                    }
+                }
+
+                alert(sum);
+            }
+        });
+    </script>
 </html>
