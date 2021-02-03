@@ -5,70 +5,92 @@
     </head>
     <body>
         <div>
-            <table>
-                <tr>
-                    <td colspan="3">Aircraft Data</td>
-                </tr>
-                <tr>
-                    <td>Call Sign</td>
-                    <td>Basic Empty Weight (lbs)</td>
-                    <td>Center of Mass (Inch)</td>
-                    <td>Moment (Inch-lbs/1000)</td>
-                    <td>Latest Update</td>
-                </tr>
-                <tr>
-                    <td>4X-CSN</td>
-                    <td>1205</td>
-                    <td>31.25</td>
-                    <td>37.656</td>
-                    <td>01/01/2021</td>
-                </tr>
-                <tr>
-                    <td colspan="3">Load Data</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>Weight (lbs)</td>
-                    <td>Units</td>
-                    <td>Arm (Inch)</td>
-                    <td>Moment (Inch-lbs/1000)</td>
-                </tr>
-                <tr>
-                    <td>Pilot</td>
-                    <td></td>
-                    <td>lbs</td>
-                    <td>39.0</td>
-                    <td>39.0</td>
-                </tr>
-                <tr>
-                    <td>Passenger 1</td>
-                    <td></td>
-                    <td>lbs</td>
-                    <td>39.0</td>
-                    <td>39.0</td>
-                </tr>
-                <tr>
-                    <td>Area 1 / Child Seat</td>
-                    <td></td>
-                    <td>lbs</td>
-                    <td>64.0</td>
-                    <td>64.0</td>
-                </tr>
-                <tr>
-                    <td>Area 2</td>
-                    <td></td>
-                    <td>lbs</td>
-                    <td>84.0</td>
-                    <td>84.0</td>
-                </tr>
-                <tr>
-                    <td>Fuel</td>
-                    <td></td>
-                    <td>US Gallon</td>
-                    <td>42.0</td>
-                    <td>42.0</td>
-                </tr>
-            </table>
+            <fieldset>
+                <legend>Aircraft Data</legend>
+
+                <table>
+                    <tr>
+                        <td><label for="call_sign">Call Sign</label></td>
+                        <td>
+                            <select name="call_sign">
+                                <option>4X-CSN</option>
+                                <option>4X-CGB</option>
+                                <option>4X-CHG</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>Latest Update</label></td>
+                        <td>01/01/2021</td>
+                    </tr>
+                    <tr>
+                        <td><label>Basic Empty Weight (lbs)</label></td>
+                        <td>1205</td>
+                    </tr>
+                    <tr>
+                        <td><label>Center of Mass (Inch)</label></td>
+                        <td>31.25</td>
+                    </tr>
+                    <tr>
+                        <td><label>Moment (Inch-lbs/1000)</label></td>
+                        <td>37.656</td>
+                    </tr>
+                </table>
+            </fieldset>
+        </div>
+        <div>
+            <fieldset>
+                <legend>Load Data</legend>
+
+                <table>
+                    <tr>
+                        <td></td>
+                        <td>Weight (lbs)</td>
+                        <td>Units</td>
+                        <td>Arm (Inch)</td>
+                        <td>Moment (Inch-lbs/1000)</td>
+                    </tr>
+                    <tr>
+                        <td><label for="txtPilotWeight">Pilot</label></td>
+                        <td><input type="number" id="txtPilotWeight" name="pilot_weight" /></td>
+                        <td>lbs</td>
+                        <td>39.0</td>
+                        <td>39.0</td>
+                    </tr>
+                    <tr>
+                        <td><label for="txtPassenger1Weight">Passenger 1</label></td>
+                        <td><input type="number" id="txtPassenger1Weight" name="passenger1_weight" /></td>
+                        <td>lbs</td>
+                        <td>39.0</td>
+                        <td>39.0</td>
+                    </tr>
+                    <tr>
+                        <td><label for="txtArea1Weight">Area 1 / Child Seat</label></td>
+                        <td><input type="number" id="txtArea1Weight" name="area1_weight" /></td>
+                        <td>lbs</td>
+                        <td>64.0</td>
+                        <td>64.0</td>
+                    </tr>
+                    <tr>
+                        <td><label for="txtArea2Weight">Area 2</label></td>
+                        <td><input type="number" id="txtArea2Weight" name="area2_weight" /></td>
+                        <td>lbs</td>
+                        <td>84.0</td>
+                        <td>84.0</td>
+                    </tr>
+                    <tr>
+                        <td><label for="txtFuelWeight">Fuel</label></td>
+                        <td><input type="number" id="txtFuelWeight" name="fuel_weight" /></td>
+                        <td>US Gallon</td>
+                        <td>42.0</td>
+                        <td>42.0</td>
+                    </tr>
+                    <tr>
+                        <td><button id="btnCalculate" name="calculate">Calculate</button></td>
+                        <td colspan="4"></td>
+                    </tr>
+                </table>
+            </fieldset>
         </div>
         
         <div>
