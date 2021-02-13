@@ -3,15 +3,47 @@
         <title>Cessna C152 Weight & Balance</title>
         <script src="https://cdn.plot.ly/plotly-1.58.4.min.js"></script>
         <script>
-            var aircraftArmData = {
+            var aircraftSpecifications = {
                 'C152': {
-                    'pilot': 39.0,
-                    'passenger1': 39.0,
-                    'area1': 64.0,
-                    'area2': 84.0,
-                    'fuel': 42.0
+                    'max_ramp_weight': 1675,
+                    'max_takeoff_weight': 1670,
+                    'max_landing_weight': 1670,
+                    'arms': {
+                        'pilot': 39.0,
+                        'passenger1': 39.0,
+                        'area1': 64.0,
+                        'area2': 84.0,
+                        'fuel': 42.0
+                    }
                 },
             };
+
+            var aircraftDB = {
+                '4X-CGB': {
+                    'model': 'C152',
+                    'year': 1978,
+                    'last_update': '01/01/2021',
+                    'fuel_type': 'avgas',
+                    'basic_empty_weight': 1230,         // lbs
+                    'center-of-mass': 31.50             // inch
+                },
+                '4X-CHG': {
+                    'model': 'C152',
+                    'year': 1978,
+                    'last_update': '01/01/2021',
+                    'fuel_type': 'avgas',
+                    'basic_empty_weight': 1123,         // lbs
+                    'center-of-mass': 33.35             // inch
+                },
+                '4X-CSN': {
+                    'model': 'C152',
+                    'year': 1978,
+                    'last_update': '01/01/2021',
+                    'fuel_type': 'avgas',
+                    'basic_empty_weight': 1205,         // lbs
+                    'center-of-mass': 31.25             // inch
+                }
+            }
         </script>
     </head>
     <body>
@@ -100,6 +132,13 @@
                         <td>US Gallon</td>
                         <td>42.0</td>
                         <td><div id="fuel_moment">0.00</div></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Total</td>
+                        <td style="font-weight: bold;"><div id="total_weight">0.00</div></td>
+                        <td style="font-weight: bold;">lbs</td>
+                        <td style="font-weight: bold;"></td>
+                        <td style="font-weight: bold;"><div id="total_moment">0.00</div></td>
                     </tr>
                     <tr>
                         <td><button id="btnCalculate" name="calculate">Calculate</button></td>
@@ -238,13 +277,18 @@
                     'fuel': Number(document.getElementById('txtFuelWeight').value),
                 };
 
-                var sum = 0.0;
+                // Compute each element weight & moment/1000 contribution and 
+                // total sum.
+                var total_weight = 0.0;
+                var total_moment = 0.0;
                 for (const key in loadData) {
                     moment_string = '';
 
                     if (Number.isFinite(loadData[key])) {
-                        moment = loadData[key] * aircraftArmData['C152'][key];
-                        sum += moment;
+                        moment = loadData[key] * aircraftSpecifications['C152']['arms'][key] / 1000.0;
+
+                        total_weight += loadData[key];
+                        total_moment += moment;
 
                         moment_string = moment.toFixed(2);
                     }
@@ -252,7 +296,8 @@
                     document.getElementById(key + '_moment').innerText = moment_string;
                 }
 
-                alert(sum);
+                document.getElementById('total_weight').innerText = total_weight.toFixed(2);
+                document.getElementById('total_moment').innerText = total_moment.toFixed(2);
             }
         });
     </script>
