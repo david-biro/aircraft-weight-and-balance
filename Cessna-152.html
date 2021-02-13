@@ -71,35 +71,35 @@
                         <td><input type="number" id="txtPilotWeight" name="pilot_weight" /></td>
                         <td>lbs</td>
                         <td>39.0</td>
-                        <td>39.0</td>
+                        <td><div id="pilot_moment">0.00</div></td>
                     </tr>
                     <tr>
                         <td><label for="txtPassenger1Weight">Passenger 1</label></td>
                         <td><input type="number" id="txtPassenger1Weight" name="passenger1_weight" /></td>
                         <td>lbs</td>
                         <td>39.0</td>
-                        <td>39.0</td>
+                        <td><div id="passenger1_moment">0.00</div></td>
                     </tr>
                     <tr>
                         <td><label for="txtArea1Weight">Area 1 / Child Seat</label></td>
                         <td><input type="number" id="txtArea1Weight" name="area1_weight" /></td>
                         <td>lbs</td>
                         <td>64.0</td>
-                        <td>64.0</td>
+                        <td><div id="area1_moment">0.00</div></td>
                     </tr>
                     <tr>
                         <td><label for="txtArea2Weight">Area 2</label></td>
                         <td><input type="number" id="txtArea2Weight" name="area2_weight" /></td>
                         <td>lbs</td>
                         <td>84.0</td>
-                        <td>84.0</td>
+                        <td><div id="area2_moment">0.00</div></td>
                     </tr>
                     <tr>
                         <td><label for="txtFuelWeight">Fuel</label></td>
                         <td><input type="number" id="txtFuelWeight" name="fuel_weight" /></td>
                         <td>US Gallon</td>
                         <td>42.0</td>
-                        <td>42.0</td>
+                        <td><div id="fuel_moment">0.00</div></td>
                     </tr>
                     <tr>
                         <td><button id="btnCalculate" name="calculate">Calculate</button></td>
@@ -240,9 +240,16 @@
 
                 var sum = 0.0;
                 for (const key in loadData) {
+                    moment_string = '';
+
                     if (Number.isFinite(loadData[key])) {
-                        sum += loadData[key] * aircraftArmData['C152'][key];
+                        moment = loadData[key] * aircraftArmData['C152'][key];
+                        sum += moment;
+
+                        moment_string = moment.toFixed(2);
                     }
+
+                    document.getElementById(key + '_moment').innerText = moment_string;
                 }
 
                 alert(sum);
