@@ -101,35 +101,60 @@
                     <tr>
                         <td><label for="txtPilotWeight">Pilot</label></td>
                         <td><input type="number" id="txtPilotWeight" name="pilot_weight" /></td>
-                        <td>lbs</td>
+                        <td>
+                            <select id="pilot_weight_units">
+                                <option value="lbs">lbs</option>
+                                <option value="kg">kg</option>
+                            </select>
+                        </td>
                         <td>39.0</td>
                         <td><div id="pilot_moment">0.00</div></td>
                     </tr>
                     <tr>
                         <td><label for="txtPassenger1Weight">Passenger 1</label></td>
                         <td><input type="number" id="txtPassenger1Weight" name="passenger1_weight" /></td>
-                        <td>lbs</td>
+                        <td>
+                            <select id="passenger1_weight_units">
+                                <option value="lbs">lbs</option>
+                                <option value="kg">kg</option>
+                            </select>
+                        </td>
                         <td>39.0</td>
                         <td><div id="passenger1_moment">0.00</div></td>
                     </tr>
                     <tr>
                         <td><label for="txtArea1Weight">Area 1 / Child Seat</label></td>
                         <td><input type="number" id="txtArea1Weight" name="area1_weight" /></td>
-                        <td>lbs</td>
+                        <td>
+                            <select id="area1_weight_units">
+                                <option value="lbs">lbs</option>
+                                <option value="kg">kg</option>
+                            </select>
+                        </td>
                         <td>64.0</td>
                         <td><div id="area1_moment">0.00</div></td>
                     </tr>
                     <tr>
                         <td><label for="txtArea2Weight">Area 2</label></td>
                         <td><input type="number" id="txtArea2Weight" name="area2_weight" /></td>
-                        <td>lbs</td>
+                        <td>
+                            <select id="area2_weight_units">
+                                <option value="lbs">lbs</option>
+                                <option value="kg">kg</option>
+                            </select>
+                        </td>
                         <td>84.0</td>
                         <td><div id="area2_moment">0.00</div></td>
                     </tr>
                     <tr>
                         <td><label for="txtFuelWeight">Fuel</label></td>
                         <td><input type="number" id="txtFuelWeight" name="fuel_weight" /></td>
-                        <td>US Gallon</td>
+                        <td>
+                            <select id="fuel_weight_units">
+                                <option value="usg">US Gallon</option>
+                                <option value="liter">Liter</option>
+                            </select>
+                        </td>
                         <td>42.0</td>
                         <td><div id="fuel_moment">0.00</div></td>
                     </tr>
@@ -264,6 +289,25 @@
         </div>
     </body>
     <script>
+        function get_weight_in_lbs(value, units) {
+            if (units == 'kg') {
+                return value * 2.2046;
+            }
+
+            if (units == 'usg') {
+                // Correct only for Avgas.
+                // See http://mye6b.com/Fuel for more details.
+                return value * 6.2;
+            } else if (units == 'liter') {
+                // Correct only for Avgas.
+                // See http://mye6b.com/Fuel for more details.
+                return value * 1.64;
+            }
+
+            // Unrecognized options, should be handled.
+            return value;
+        }
+
         var btnCalculate = document.getElementById('btnCalculate');
         btnCalculate.addEventListener('click', function() {
             // Compute total moment and mass, check if inside envelope.
@@ -285,9 +329,17 @@
                     moment_string = '';
 
                     if (Number.isFinite(loadData[key])) {
-                        moment = loadData[key] * aircraftSpecifications['C152']['arms'][key] / 1000.0;
+                        // Get weight in lbs, convert if needed.
+                        var units = document.getElementById(key + '_weight_units').value;
+                        weight_in_lbs = loadData[key];
+                        
+                        if (units != 'lbs') {
+                            weight_in_lbs = get_weight_in_lbs(weight_in_lbs, units);
+                        }
 
-                        total_weight += loadData[key];
+                        moment = weight_in_lbs * aircraftSpecifications['C152']['arms'][key] / 1000.0;
+
+                        total_weight += weight_in_lbs;
                         total_moment += moment;
 
                         moment_string = moment.toFixed(2);
