@@ -55,7 +55,7 @@
                     <tr>
                         <td><label for="call_sign">Call Sign</label></td>
                         <td>
-                            <select name="call_sign">
+                            <select name="call_sign" id="call_sign">
                                 <option>4X-CSN</option>
                                 <option>4X-CGB</option>
                                 <option>4X-CHG</option>
@@ -180,9 +180,23 @@
             <script>
                 airplaneCGEnvelope_C152 = {
                     type: 'scatter',
+                    name: 'Normal Category',
                     x: [31, 31, 32.65, 36.5, 36.5, 31],
                     y: [1000, 1350, 1670, 1670, 1000, 1000],
                 };
+
+                var airplaneCGEnvelope_result = {
+                    x: [0],
+                    y: [0],
+                    marker: {
+                        symbol: 'triangle-up', 
+                        size: 10, 
+                        color: 'red', 
+                        line: { width: 1, color: 'black'}
+                    }
+                };
+
+                var airplaneCGEnvelope_traceID = null;
 
                 var layout = {
                     title: 'Cessna C152 - C.G. Limits',
@@ -211,11 +225,24 @@
             <div id="pltAirplaneCGMomentEnvelope" style="width:600px;height:400px;"></div>
 
             <script>
-                airplaneCGMomentEnvelope_C152 = {
+                var airplaneCGMomentEnvelope_C152 = {
                     type: 'scatter',
                     x: [31, 54.5, 61, 36.5],
                     y: [1000, 1670, 1670, 1000],
                 };
+
+                var airplaneCGMomentEnvelope_result = {
+                    x: [0],
+                    y: [0],
+                    marker: {
+                        symbol: 'triangle-up', 
+                        size: 10, 
+                        color: 'red', 
+                        line: { width: 1, color: 'black'}
+                    }
+                };
+
+                var airplaneCGMomentEnvelope_traceID = null;
 
                 var layout = {
                     title: 'Cessna C152 - C.G. Moment Envelope',
@@ -310,6 +337,9 @@
 
         var btnCalculate = document.getElementById('btnCalculate');
         btnCalculate.addEventListener('click', function() {
+            // Get current aircraft call sign from DB.
+            var callSign = document.getElementById('call_sign').value;
+
             // Compute total moment and mass, check if inside envelope.
             // For C152.
             if (true) {
@@ -348,8 +378,22 @@
                     document.getElementById(key + '_moment').innerText = moment_string;
                 }
 
+                // Update table with numerical result.
                 document.getElementById('total_weight').innerText = total_weight.toFixed(2);
                 document.getElementById('total_moment').innerText = total_moment.toFixed(2);
+
+                // Update graph with result.
+                total_weight += aircraftDB[callSign]['basic_empty_weight'];
+                total_moment += aircraftDB[callSign]['basic_empty_weight'] * aircraftDB[callSign]['center-of-mass'] / 1000.0;
+                if (airplaneCGEnvelope_traceID != null) {
+                    // Remove recent graph.
+                    Plotly.deleteTraces('pltAirplaneCGLocation', -1);
+                    airplaneCGEnvelope_traceID = null;
+                }
+                airplaneCGEnvelope_result['name'] = callSign;
+                airplaneCGEnvelope_result['x'][0] = 1000.0 * total_moment / total_weight;
+                airplaneCGEnvelope_result['y'][0] = total_weight;
+                airplaneCGEnvelope_traceID = Plotly.addTraces('pltAirplaneCGLocation', airplaneCGEnvelope_result);
             }
         });
     </script>
