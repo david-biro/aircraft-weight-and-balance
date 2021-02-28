@@ -200,6 +200,7 @@
 
                 var layout = {
                     title: 'Cessna C152 - C.G. Limits',
+                    showlegend: true,
                     xaxis: {
                         title: 'Cessna C152 - C.G. Location-Inches Aft of Datum',
                         range: [30, 37],
@@ -227,6 +228,7 @@
             <script>
                 var airplaneCGMomentEnvelope_C152 = {
                     type: 'scatter',
+                    name: 'Envelope',
                     x: [31, 54.5, 61, 36.5],
                     y: [1000, 1670, 1670, 1000],
                 };
@@ -246,6 +248,7 @@
 
                 var layout = {
                     title: 'Cessna C152 - C.G. Moment Envelope',
+                    showlegend: true,
                     xaxis: {
                         title: 'Loaded Airplane Moment/1000 (Pound-Inches)',
                         range: [30, 65],
@@ -268,32 +271,37 @@
 
         <div>
             <p>Loading Graph</p>
-            <div id="pltAirplaneLoadingGraph" style="width:600px;height:400px;"></div>
+            <div id="pltAirplaneLoadingGraph" style="width:800px;height:400px;"></div>
 
             <script>
                 pilotPassengerAndLongRangeFuelTanksLoadGraph_C152 = {
                     type: 'scatter',
+                    name: 'Pilot/Passenger/Long Range Fuel Tanks',
                     x: [0, 15.5],
                     y: [0, 400],
                 };
                 fuelTanksLoadGraph_C152 = {
                     type: 'scatter',
+                    name: 'Standard Fuel Tanks',
                     x: [0, 6.2],
                     y: [0, 150],
                 };
                 area1LoadGraph_C152 = {
                     type: 'scatter',
+                    name: 'Area 1/Child Seat',
                     x: [0, 7.7],
                     y: [0, 120],
                 };
                 area2LoadGraph_C152 = {
                     type: 'scatter',
+                    name: 'Area 2',
                     x: [0, 3.3],
                     y: [0, 40],
                 };
 
                 var layout = {
                     title: 'Cessna C152 - Loading Graph',
+                    showlegend: true,
                     xaxis: {
                         title: 'Load Moment/1000 (Pound-Inches)',
                         range: [0, 16],
