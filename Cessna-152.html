@@ -382,18 +382,31 @@
                 document.getElementById('total_weight').innerText = total_weight.toFixed(2);
                 document.getElementById('total_moment').innerText = total_moment.toFixed(2);
 
-                // Update graph with result.
+                // Update graphs with result.
                 total_weight += aircraftDB[callSign]['basic_empty_weight'];
                 total_moment += aircraftDB[callSign]['basic_empty_weight'] * aircraftDB[callSign]['center-of-mass'] / 1000.0;
+                
+                // Remove recent graphs.
                 if (airplaneCGEnvelope_traceID != null) {
-                    // Remove recent graph.
                     Plotly.deleteTraces('pltAirplaneCGLocation', -1);
                     airplaneCGEnvelope_traceID = null;
                 }
+
+                if (airplaneCGMomentEnvelope_traceID != null) {
+                    Plotly.deleteTraces('pltAirplaneCGMomentEnvelope', -1);
+                    airplaneCGMomentEnvelope_traceID = null;
+                }
+
+                // Add result to plots. 
                 airplaneCGEnvelope_result['name'] = callSign;
                 airplaneCGEnvelope_result['x'][0] = 1000.0 * total_moment / total_weight;
                 airplaneCGEnvelope_result['y'][0] = total_weight;
                 airplaneCGEnvelope_traceID = Plotly.addTraces('pltAirplaneCGLocation', airplaneCGEnvelope_result);
+
+                airplaneCGMomentEnvelope_result['name'] = callSign;
+                airplaneCGMomentEnvelope_result['x'][0] = total_moment;
+                airplaneCGMomentEnvelope_result['y'][0] = total_weight;
+                airplaneCGMomentEnvelope_traceID = Plotly.addTraces('pltAirplaneCGMomentEnvelope', airplaneCGMomentEnvelope_result);
             }
         });
     </script>
