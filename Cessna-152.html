@@ -25,7 +25,7 @@
                     'last_update': '01/01/2021',
                     'fuel_type': 'avgas',
                     'basic_empty_weight': 1230,         // lbs
-                    'center-of-mass': 31.50             // inch
+                    'center_of_mass': 31.50             // inch
                 },
                 '4X-CHG': {
                     'model': 'C152',
@@ -33,7 +33,7 @@
                     'last_update': '01/01/2021',
                     'fuel_type': 'avgas',
                     'basic_empty_weight': 1123,         // lbs
-                    'center-of-mass': 33.35             // inch
+                    'center_of_mass': 33.35             // inch
                 },
                 '4X-CSN': {
                     'model': 'C152',
@@ -41,7 +41,7 @@
                     'last_update': '01/01/2021',
                     'fuel_type': 'avgas',
                     'basic_empty_weight': 1205,         // lbs
-                    'center-of-mass': 31.25             // inch
+                    'center_of_mass': 31.25             // inch
                 }
             }
         </script>
@@ -65,26 +65,50 @@
                     </tr>
                     <tr>
                         <td><label>Latest Update</label></td>
-                        <td>01/01/2021</td>
+                        <td><div id="aircraft_last_update"></div></td>
                         <td></td>
                     </tr>
                     <tr>
                         <td><label>Basic Empty Weight</label></td>
-                        <td>1205</td>
+                        <td><div id="aircraft_basic_empty_weight"></div></td>
                         <td>(lbs)</td>
                     </tr>
                     <tr>
                         <td><label>Center of Mass</label></td>
-                        <td>31.25</td>
+                        <td><div id="aircraft_center_of_mass"></div></td>
                         <td>(Inch)</td>
                     </tr>
                     <tr>
                         <td><label>Moment</label></td>
-                        <td>37.656</td>
+                        <td><div id="aircraft_moment"></div></td>
                         <td>(Inch-lbs/1000)</td>
                     </tr>
                 </table>
             </fieldset>
+
+            <script>
+                function update_aircraft_data() {
+                    // If call sign exists in DB.
+                    var callSign = document.getElementById('call_sign').value;
+                    if (!(callSign in aircraftDB)) {
+                        return;
+                    }
+
+                    // Update general aircraft data.
+                    document.getElementById('aircraft_last_update').innerText = aircraftDB[callSign]['last_update'];
+                    document.getElementById('aircraft_basic_empty_weight').innerText = aircraftDB[callSign]['basic_empty_weight'];
+                    document.getElementById('aircraft_center_of_mass').innerText = aircraftDB[callSign]['center_of_mass'];
+                    document.getElementById('aircraft_moment').innerText = (aircraftDB[callSign]['basic_empty_weight'] * aircraftDB[callSign]['center_of_mass'] / 1000.0).toFixed(2);
+                }
+
+                window.addEventListener('load', (event) => {
+                    update_aircraft_data();
+                });
+
+                document.getElementById('call_sign').addEventListener('change', (event) => {
+                    update_aircraft_data();
+                });
+            </script>
         </div>
         <div>
             <fieldset>
@@ -167,17 +191,17 @@
                     </tr>
                     <tr>
                         <td>Useful Load</td>
-                        <td><div id="load_weight">0.00</div></td>
+                        <td><div id="load_weight_summary">0.00</div></td>
                         <td>lbs</td>
-                        <td><div id="load_arm">0.00</div></td>
-                        <td><div id="load_moment">0.00</div></td>
+                        <td><div id="load_arm_summary">0.00</div></td>
+                        <td><div id="load_moment_summary">0.00</div></td>
                     </tr>
                     <tr>
                         <td style="font-weight: bold;">Aircraft</td>
-                        <td style="font-weight: bold;"><div id="aircraft_weight">0.00</div></td>
+                        <td style="font-weight: bold;"><div id="aircraft_weight_summary">0.00</div></td>
                         <td style="font-weight: bold;">lbs</td>
-                        <td style="font-weight: bold;"><div id="aircraft_arm">0.00</div></td>
-                        <td style="font-weight: bold;"><div id="aircraft_moment">0.00</div></td>
+                        <td style="font-weight: bold;"><div id="aircraft_arm_summary">0.00</div></td>
+                        <td style="font-weight: bold;"><div id="aircraft_moment_summary">0.00</div></td>
                     </tr>
                     <tr>
                         <td><button id="btnCalculate" name="calculate">Calculate</button></td>
@@ -401,22 +425,22 @@
                 }
 
                 // Update table with numerical result.
-                document.getElementById('load_weight').innerText = load_weight.toFixed(2);
-                document.getElementById('load_arm').innerText = (load_moment / load_weight * 1000.0).toFixed(2);
-                document.getElementById('load_moment').innerText = load_moment.toFixed(2);
+                document.getElementById('load_weight_summary').innerText = load_weight.toFixed(2);
+                document.getElementById('load_arm_summary').innerText = (load_moment / load_weight * 1000.0).toFixed(2);
+                document.getElementById('load_moment_summary').innerText = load_moment.toFixed(2);
 
                 // Compute aircraft summary.
                 var basic_aircraft_weight = aircraftDB[callSign]['basic_empty_weight'];
-                var basic_aircraft_com = aircraftDB[callSign]['center-of-mass'];
+                var basic_aircraft_com = aircraftDB[callSign]['center_of_mass'];
 
                 var aircraft_weight = load_weight + basic_aircraft_weight;
                 var aircraft_moment = load_moment + basic_aircraft_weight * basic_aircraft_com / 1000.0;
                 var aircraft_arm = aircraft_moment / aircraft_weight * 1000.0;
 
                 // Update table with numerical result.
-                document.getElementById('aircraft_weight').innerText = aircraft_weight.toFixed(2);
-                document.getElementById('aircraft_arm').innerText = aircraft_arm.toFixed(2);
-                document.getElementById('aircraft_moment').innerText = aircraft_moment.toFixed(2);
+                document.getElementById('aircraft_weight_summary').innerText = aircraft_weight.toFixed(2);
+                document.getElementById('aircraft_arm_summary').innerText = aircraft_arm.toFixed(2);
+                document.getElementById('aircraft_moment_summary').innerText = aircraft_moment.toFixed(2);
 
                 // Remove recent graphs.
                 if (airplaneCGEnvelope_traceID != null) {
