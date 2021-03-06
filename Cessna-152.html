@@ -159,11 +159,25 @@
                         <td><div id="fuel_moment">0.00</div></td>
                     </tr>
                     <tr>
-                        <td style="font-weight: bold;">Total</td>
-                        <td style="font-weight: bold;"><div id="total_weight">0.00</div></td>
+                        <td colspan="5"><hr /></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Summary</td>
+                        <td colspan="4"></td>
+                    </tr>
+                    <tr>
+                        <td>Useful Load</td>
+                        <td><div id="load_weight">0.00</div></td>
+                        <td>lbs</td>
+                        <td><div id="load_arm">0.00</div></td>
+                        <td><div id="load_moment">0.00</div></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Aircraft</td>
+                        <td style="font-weight: bold;"><div id="aircraft_weight">0.00</div></td>
                         <td style="font-weight: bold;">lbs</td>
-                        <td style="font-weight: bold;"></td>
-                        <td style="font-weight: bold;"><div id="total_moment">0.00</div></td>
+                        <td style="font-weight: bold;"><div id="aircraft_arm">0.00</div></td>
+                        <td style="font-weight: bold;"><div id="aircraft_moment">0.00</div></td>
                     </tr>
                     <tr>
                         <td><button id="btnCalculate" name="calculate">Calculate</button></td>
@@ -361,8 +375,8 @@
 
                 // Compute each element weight & moment/1000 contribution and 
                 // total sum.
-                var total_weight = 0.0;
-                var total_moment = 0.0;
+                var load_weight = 0.0;
+                var load_moment = 0.0;
                 for (const key in loadData) {
                     moment_string = '';
 
@@ -377,8 +391,8 @@
 
                         moment = weight_in_lbs * aircraftSpecifications['C152']['arms'][key] / 1000.0;
 
-                        total_weight += weight_in_lbs;
-                        total_moment += moment;
+                        load_weight += weight_in_lbs;
+                        load_moment += moment;
 
                         moment_string = moment.toFixed(2);
                     }
@@ -387,13 +401,23 @@
                 }
 
                 // Update table with numerical result.
-                document.getElementById('total_weight').innerText = total_weight.toFixed(2);
-                document.getElementById('total_moment').innerText = total_moment.toFixed(2);
+                document.getElementById('load_weight').innerText = load_weight.toFixed(2);
+                document.getElementById('load_arm').innerText = (load_moment / load_weight * 1000.0).toFixed(2);
+                document.getElementById('load_moment').innerText = load_moment.toFixed(2);
 
-                // Update graphs with result.
-                total_weight += aircraftDB[callSign]['basic_empty_weight'];
-                total_moment += aircraftDB[callSign]['basic_empty_weight'] * aircraftDB[callSign]['center-of-mass'] / 1000.0;
-                
+                // Compute aircraft summary.
+                var basic_aircraft_weight = aircraftDB[callSign]['basic_empty_weight'];
+                var basic_aircraft_com = aircraftDB[callSign]['center-of-mass'];
+
+                var aircraft_weight = load_weight + basic_aircraft_weight;
+                var aircraft_moment = load_moment + basic_aircraft_weight * basic_aircraft_com / 1000.0;
+                var aircraft_arm = aircraft_moment / aircraft_weight * 1000.0;
+
+                // Update table with numerical result.
+                document.getElementById('aircraft_weight').innerText = aircraft_weight.toFixed(2);
+                document.getElementById('aircraft_arm').innerText = aircraft_arm.toFixed(2);
+                document.getElementById('aircraft_moment').innerText = aircraft_moment.toFixed(2);
+
                 // Remove recent graphs.
                 if (airplaneCGEnvelope_traceID != null) {
                     Plotly.deleteTraces('pltAirplaneCGLocation', -1);
@@ -405,15 +429,16 @@
                     airplaneCGMomentEnvelope_traceID = null;
                 }
 
+                // Update graphs with result.
                 // Add result to plots. 
                 airplaneCGEnvelope_result['name'] = callSign;
-                airplaneCGEnvelope_result['x'][0] = 1000.0 * total_moment / total_weight;
-                airplaneCGEnvelope_result['y'][0] = total_weight;
+                airplaneCGEnvelope_result['x'][0] = 1000.0 * aircraft_moment / aircraft_weight;
+                airplaneCGEnvelope_result['y'][0] = aircraft_weight;
                 airplaneCGEnvelope_traceID = Plotly.addTraces('pltAirplaneCGLocation', airplaneCGEnvelope_result);
 
                 airplaneCGMomentEnvelope_result['name'] = callSign;
-                airplaneCGMomentEnvelope_result['x'][0] = total_moment;
-                airplaneCGMomentEnvelope_result['y'][0] = total_weight;
+                airplaneCGMomentEnvelope_result['x'][0] = aircraft_moment;
+                airplaneCGMomentEnvelope_result['y'][0] = aircraft_weight;
                 airplaneCGMomentEnvelope_traceID = Plotly.addTraces('pltAirplaneCGMomentEnvelope', airplaneCGMomentEnvelope_result);
             }
         });
