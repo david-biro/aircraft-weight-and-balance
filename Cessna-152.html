@@ -424,7 +424,8 @@
                 };
 
                 // Reset summary for loading graph.
-                var loadGraphSum = {};
+                var loadGraphWeightSum = {};
+                var loadGraphMomentSum = {};
 
                 // Compute each element weight & moment/1000 contribution and 
                 // total sum.
@@ -442,16 +443,21 @@
                             weight_in_lbs = get_weight_in_lbs(weight_in_lbs, units);
                         }
 
-                        // Add contribution to loading graph summary.
-                        if (!(aircraftSpecifications['C152']['arms_loading_graph_contrib'][key] in loadGraphSum)) {
-                            loadGraphSum[aircraftSpecifications['C152']['arms_loading_graph_contrib'][key]] = 0.0;
-                        }
-                        loadGraphSum[aircraftSpecifications['C152']['arms_loading_graph_contrib'][key]] += weight_in_lbs;
-
                         moment = weight_in_lbs * aircraftSpecifications['C152']['arms'][key] / 1000.0;
 
                         load_weight += weight_in_lbs;
                         load_moment += moment;
+
+                        // Add contribution to loading graph summary.
+                        if (!(aircraftSpecifications['C152']['arms_loading_graph_contrib'][key] in loadGraphWeightSum)) {
+                            loadGraphWeightSum[aircraftSpecifications['C152']['arms_loading_graph_contrib'][key]] = 0.0;
+                        }
+                        if (!(aircraftSpecifications['C152']['arms_loading_graph_contrib'][key] in loadGraphMomentSum)) {
+                            loadGraphMomentSum[aircraftSpecifications['C152']['arms_loading_graph_contrib'][key]] = 0.0;
+                        }
+
+                        loadGraphWeightSum[aircraftSpecifications['C152']['arms_loading_graph_contrib'][key]] += weight_in_lbs;
+                        loadGraphMomentSum[aircraftSpecifications['C152']['arms_loading_graph_contrib'][key]] += moment;
 
                         moment_string = moment.toFixed(2);
                     }
@@ -489,8 +495,8 @@
                 }
 
                 if (airplaneLoadingGraph_traceIDs != null) {
-                    for (const traceID in airplaneLoadingGraph_traceIDs) {
-                        Plotly.deleteTraces('pltAirplaneLoadingGraph', traceID);
+                    for (let i=0; i<airplaneLoadingGraph_traceIDs.length; i++) {
+                        Plotly.deleteTraces('pltAirplaneLoadingGraph', -1);
                     }
 
                     airplaneLoadingGraph_traceIDs = null;
@@ -507,6 +513,30 @@
                 airplaneCGMomentEnvelope_result['x'][0] = aircraft_moment;
                 airplaneCGMomentEnvelope_result['y'][0] = aircraft_weight;
                 airplaneCGMomentEnvelope_traceID = Plotly.addTraces('pltAirplaneCGMomentEnvelope', airplaneCGMomentEnvelope_result);
+
+                airplaneLoadingGraph_traceIDs = [];
+                var currentLoadGraphData = document.getElementById('pltAirplaneLoadingGraph').data;
+                var numTraces = currentLoadGraphData.length;
+                for (let i = 0; i < numTraces; i++) {
+                    if (!(i in loadGraphWeightSum)) {
+                        continue;
+                    }
+
+                    if (!(loadGraphMomentSum[i] > 0.0) && !(loadGraphWeightSum[i] > 0.0)) {
+                        continue;
+                    }
+
+                    var loadGraphResult = {
+                        name: currentLoadGraphData[i].name.replace(' - Maximum', ''),
+                        x: [0, loadGraphMomentSum[i]],
+                        y: [0, loadGraphWeightSum[i]],
+                        line: {
+                            dash: currentLoadGraphData[i].line.dash
+                        }
+                    };
+
+                    airplaneLoadingGraph_traceIDs.push(Plotly.addTraces('pltAirplaneLoadingGraph', loadGraphResult));
+                }
             }
         });
     </script>
