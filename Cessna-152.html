@@ -14,6 +14,14 @@
                         'area1': 64.0,
                         'area2': 84.0,
                         'fuel': 42.0
+                    },
+                    'arms_loading_graph_contrib': {
+                        'pilot': 0,
+                        'passenger1': 0,
+                        'fuel_long_range': 0,
+                        'fuel': 1,
+                        'area1': 2,
+                        'area2': 3,
                     }
                 },
             };
@@ -353,6 +361,8 @@
                     }
                 };
 
+                var airplaneLoadingGraph_traceIDs = null;
+
                 var layout = {
                     title: 'Cessna C152 - Loading Graph',
                     showlegend: true,
@@ -413,6 +423,9 @@
                     'fuel': Number(document.getElementById('txtFuelWeight').value),
                 };
 
+                // Reset summary for loading graph.
+                var loadGraphSum = {};
+
                 // Compute each element weight & moment/1000 contribution and 
                 // total sum.
                 var load_weight = 0.0;
@@ -428,6 +441,12 @@
                         if (units != 'lbs') {
                             weight_in_lbs = get_weight_in_lbs(weight_in_lbs, units);
                         }
+
+                        // Add contribution to loading graph summary.
+                        if (!(aircraftSpecifications['C152']['arms_loading_graph_contrib'][key] in loadGraphSum)) {
+                            loadGraphSum[aircraftSpecifications['C152']['arms_loading_graph_contrib'][key]] = 0.0;
+                        }
+                        loadGraphSum[aircraftSpecifications['C152']['arms_loading_graph_contrib'][key]] += weight_in_lbs;
 
                         moment = weight_in_lbs * aircraftSpecifications['C152']['arms'][key] / 1000.0;
 
@@ -467,6 +486,14 @@
                 if (airplaneCGMomentEnvelope_traceID != null) {
                     Plotly.deleteTraces('pltAirplaneCGMomentEnvelope', -1);
                     airplaneCGMomentEnvelope_traceID = null;
+                }
+
+                if (airplaneLoadingGraph_traceIDs != null) {
+                    for (const traceID in airplaneLoadingGraph_traceIDs) {
+                        Plotly.deleteTraces('pltAirplaneLoadingGraph', traceID);
+                    }
+
+                    airplaneLoadingGraph_traceIDs = null;
                 }
 
                 // Update graphs with result.
