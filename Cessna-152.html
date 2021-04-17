@@ -220,199 +220,208 @@
         </div>
         
         <div>
-            <p>Center-of-Gravity Limits</p>
-            <div id="pltAirplaneCGLocation" style="width:600px;height:400px;"></div>
+            <fieldset>
+                <legend>Center-of-Gravity Limits Details</legend>
 
-            <script>
-                airplaneCGEnvelope_C152 = {
-                    type: 'scatter',
-                    name: 'Normal Category',
-                    x: [31, 31, 32.65, 36.5, 36.5, 31],
-                    y: [1000, 1350, 1670, 1670, 1000, 1000],
-                };
+                <div id="pltAirplaneCGLocation" style="width:600px;height:400px;"></div>
 
-                var airplaneCGEnvelope_result = {
-                    x: [0],
-                    y: [0],
-                    marker: {
-                        symbol: 'triangle-up', 
-                        size: 10, 
-                        color: 'red', 
-                        line: { width: 1, color: 'black'}
-                    }
-                };
+                <script>
+                    airplaneCGEnvelope_C152 = {
+                        type: 'scatter',
+                        name: 'Normal Category',
+                        x: [31, 31, 32.65, 36.5, 36.5, 31],
+                        y: [1000, 1350, 1670, 1670, 1000, 1000],
+                    };
 
-                var airplaneCGEnvelope_traceID = null;
-
-                var layout = {
-                    title: 'Cessna C152 - C.G. Limits',
-                    showlegend: true,
-                    xaxis: {
-                        title: 'Cessna C152 - C.G. Location-Inches Aft of Datum',
-                        range: [30, 37],
-                        tickmode: 'linear',
-                        tick0: 30,
-                        dtick: 1
-                    },
-                    yaxis: {
-                        title: 'Loaded Airplane Weight (Pounds)',
-                        range: [1000, 1800],
-                        tickmode: 'linear',
-                        tick0: 1000,
-                        dtick: 100
-                    }
-                };
-
-                pltAirplaneCGLocation = Plotly.newPlot('pltAirplaneCGLocation', [airplaneCGEnvelope_C152], layout);
-            </script>
-        </div>
-
-        <div>
-            <p>Center-of-Gravity Moment Envelope</p>
-            <div id="pltAirplaneCGMomentEnvelope" style="width:600px;height:400px;"></div>
-
-            <script>
-                var airplaneCGMomentEnvelope_C152 = {
-                    type: 'scatter',
-                    name: 'Envelope',
-                    x: [31, 54.5, 61, 36.5],
-                    y: [1000, 1670, 1670, 1000],
-                };
-
-                var airplaneCGMomentEnvelope_result = {
-                    x: [0],
-                    y: [0],
-                    marker: {
-                        symbol: 'triangle-up', 
-                        size: 10, 
-                        color: 'red', 
-                        line: { width: 1, color: 'black'}
-                    }
-                };
-
-                var airplaneCGMomentEnvelope_traceID = null;
-
-                var layout = {
-                    title: 'Cessna C152 - C.G. Moment Envelope',
-                    showlegend: true,
-                    xaxis: {
-                        title: 'Loaded Airplane Moment/1000 (Pound-Inches)',
-                        range: [30, 65],
-                        tickmode: 'linear',
-                        tick0: 30,
-                        dtick: 5
-                    },
-                    yaxis: {
-                        title: 'Loaded Airplane Weight (Pounds)',
-                        range: [1000, 1800],
-                        tickmode: 'linear',
-                        tick0: 1000,
-                        dtick: 100
-                    }
-                };
-
-                pltAirplaneCGMomentEnvelope = Plotly.newPlot('pltAirplaneCGMomentEnvelope', [airplaneCGMomentEnvelope_C152], layout);
-            </script>
-        </div>
-
-        <div>
-            <p>Loading Graph</p>
-            <div id="pltAirplaneLoadingGraph" style="width:850px;height:400px;"></div>
-
-            <script>
-                loadingGraphs = {
-                    C152: [
-                        {
-                            type: 'scatter',
-                            name: 'Pilot/Passenger/Long Range Fuel Tanks - Maximum',
-                            x: [0, 15.5],
-                            y: [0, 400],
-                            line: {
-                                color: 'black',
-                                dash: 'solid'
-                            }
-                        },
-                        {
-                            type: 'scatter',
-                            name: 'Standard Fuel Tanks - Maximum',
-                            x: [0, 6.2],
-                            y: [0, 150],
-                            line: {
-                                color: 'black',
-                                dash: 'dash'
-                            }
-                        },
-                        {
-                            type: 'scatter',
-                            name: 'Area 1/Child Seat - Maximum',
-                            x: [0, 7.7],
-                            y: [0, 120],
-                            line: {
-                                color: 'black',
-                                dash: 'longdash'
-                            }
-                        },
-                        {
-                            type: 'scatter',
-                            name: 'Area 2 - Maximum',
-                            x: [0, 3.3],
-                            y: [0, 40],
-                            line: {
-                                color: 'black',
-                                dash: 'dot'
-                            }
+                    var airplaneCGEnvelope_result = {
+                        x: [0],
+                        y: [0],
+                        marker: {
+                            symbol: 'triangle-up', 
+                            size: 10, 
+                            color: 'red', 
+                            line: { width: 1, color: 'black'}
                         }
-                    ]
-                };
+                    };
 
-                loadingGraphsResultMarkers = {
-                    C152: [
-                        {
-                            symbol: 'circle-open', 
-                            size: 10, 
-                            color: 'blue'
-                        },
-                        {
-                            symbol: 'diamond-open', 
-                            size: 10, 
-                            color: 'blue'
-                        },
-                        {
-                            symbol: 'x-open', 
-                            size: 10, 
-                            color: 'blue'
-                        },
-                        {
-                            symbol: 'triangle-up-open', 
-                            size: 10, 
-                            color: 'blue'
-                        },
-                    ]
-                };
+                    var airplaneCGEnvelope_traceID = null;
 
-                var airplaneLoadingGraph_traceIDs = null;
+                    var layout = {
+                        title: 'Cessna C152 - C.G. Limits',
+                        showlegend: true,
+                        xaxis: {
+                            title: 'Cessna C152 - C.G. Location-Inches Aft of Datum',
+                            range: [30, 37],
+                            tickmode: 'linear',
+                            tick0: 30,
+                            dtick: 1
+                        },
+                        yaxis: {
+                            title: 'Loaded Airplane Weight (Pounds)',
+                            range: [1000, 1800],
+                            tickmode: 'linear',
+                            tick0: 1000,
+                            dtick: 100
+                        }
+                    };
 
-                var layout = {
-                    title: 'Cessna C152 - Loading Graph',
-                    showlegend: true,
-                    xaxis: {
-                        title: 'Load Moment/1000 (Pound-Inches)',
-                        range: [0, 16],
-                        tickmode: 'linear',
-                        tick0: 0,
-                        dtick: 1
-                    },
-                    yaxis: {
-                        title: 'Load Weight (Pounds)',
-                        range: [0, 500],
-                        tickmode: 'linear',
-                        tick0: 0,
-                        dtick: 50
-                    }
-                };
+                    pltAirplaneCGLocation = Plotly.newPlot('pltAirplaneCGLocation', [airplaneCGEnvelope_C152], layout);
+                </script>
+            </fieldset>
+        </div>
 
-                pltAirplaneLoadingGraph = Plotly.newPlot('pltAirplaneLoadingGraph', loadingGraphs['C152'], layout);
-            </script>
+        <div>
+            <fieldset>
+                <legend>Center-of-Gravity Moment Envelope Details</legend>
+
+                <div id="pltAirplaneCGMomentEnvelope" style="width:600px;height:400px;"></div>
+
+                <script>
+                    var airplaneCGMomentEnvelope_C152 = {
+                        type: 'scatter',
+                        name: 'Envelope',
+                        x: [31, 54.5, 61, 36.5],
+                        y: [1000, 1670, 1670, 1000],
+                    };
+
+                    var airplaneCGMomentEnvelope_result = {
+                        x: [0],
+                        y: [0],
+                        marker: {
+                            symbol: 'triangle-up', 
+                            size: 10, 
+                            color: 'red', 
+                            line: { width: 1, color: 'black'}
+                        }
+                    };
+
+                    var airplaneCGMomentEnvelope_traceID = null;
+
+                    var layout = {
+                        title: 'Cessna C152 - C.G. Moment Envelope',
+                        showlegend: true,
+                        xaxis: {
+                            title: 'Loaded Airplane Moment/1000 (Pound-Inches)',
+                            range: [30, 65],
+                            tickmode: 'linear',
+                            tick0: 30,
+                            dtick: 5
+                        },
+                        yaxis: {
+                            title: 'Loaded Airplane Weight (Pounds)',
+                            range: [1000, 1800],
+                            tickmode: 'linear',
+                            tick0: 1000,
+                            dtick: 100
+                        }
+                    };
+
+                    pltAirplaneCGMomentEnvelope = Plotly.newPlot('pltAirplaneCGMomentEnvelope', [airplaneCGMomentEnvelope_C152], layout);
+                </script>
+            </fieldset>
+        </div>
+
+        <div>
+            <fieldset>
+                <legend>Loading Details</legend>
+
+                <div id="pltAirplaneLoadingGraph" style="width:850px;height:400px;"></div>
+
+                <script>
+                    loadingGraphs = {
+                        C152: [
+                            {
+                                type: 'scatter',
+                                name: 'Pilot/Passenger/Long Range Fuel Tanks - Maximum',
+                                x: [0, 15.5],
+                                y: [0, 400],
+                                line: {
+                                    color: 'black',
+                                    dash: 'solid'
+                                }
+                            },
+                            {
+                                type: 'scatter',
+                                name: 'Standard Fuel Tanks - Maximum',
+                                x: [0, 6.2],
+                                y: [0, 150],
+                                line: {
+                                    color: 'black',
+                                    dash: 'dash'
+                                }
+                            },
+                            {
+                                type: 'scatter',
+                                name: 'Area 1/Child Seat - Maximum',
+                                x: [0, 7.7],
+                                y: [0, 120],
+                                line: {
+                                    color: 'black',
+                                    dash: 'longdash'
+                                }
+                            },
+                            {
+                                type: 'scatter',
+                                name: 'Area 2 - Maximum',
+                                x: [0, 3.3],
+                                y: [0, 40],
+                                line: {
+                                    color: 'black',
+                                    dash: 'dot'
+                                }
+                            }
+                        ]
+                    };
+
+                    loadingGraphsResultMarkers = {
+                        C152: [
+                            {
+                                symbol: 'circle-open', 
+                                size: 10, 
+                                color: 'blue'
+                            },
+                            {
+                                symbol: 'diamond-open', 
+                                size: 10, 
+                                color: 'blue'
+                            },
+                            {
+                                symbol: 'x-open', 
+                                size: 10, 
+                                color: 'blue'
+                            },
+                            {
+                                symbol: 'triangle-up-open', 
+                                size: 10, 
+                                color: 'blue'
+                            },
+                        ]
+                    };
+
+                    var airplaneLoadingGraph_traceIDs = null;
+
+                    var layout = {
+                        title: 'Cessna C152 - Loading Graph',
+                        showlegend: true,
+                        xaxis: {
+                            title: 'Load Moment/1000 (Pound-Inches)',
+                            range: [0, 16],
+                            tickmode: 'linear',
+                            tick0: 0,
+                            dtick: 1
+                        },
+                        yaxis: {
+                            title: 'Load Weight (Pounds)',
+                            range: [0, 500],
+                            tickmode: 'linear',
+                            tick0: 0,
+                            dtick: 50
+                        }
+                    };
+
+                    pltAirplaneLoadingGraph = Plotly.newPlot('pltAirplaneLoadingGraph', loadingGraphs['C152'], layout);
+                </script>
+            </fieldset>
         </div>
     </body>
     <script>
