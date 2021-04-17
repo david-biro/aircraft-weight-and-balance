@@ -320,45 +320,58 @@
             <div id="pltAirplaneLoadingGraph" style="width:850px;height:400px;"></div>
 
             <script>
-                pilotPassengerAndLongRangeFuelTanksLoadGraph_C152 = {
-                    type: 'scatter',
-                    name: 'Pilot/Passenger/Long Range Fuel Tanks - Maximum',
-                    x: [0, 15.5],
-                    y: [0, 400],
-                    line: {
-                        color: 'black',
-                        dash: 'solid'
-                    }
+                loadingGraphs = {
+                    C152: [
+                        {
+                            type: 'scatter',
+                            name: 'Pilot/Passenger/Long Range Fuel Tanks - Maximum',
+                            x: [0, 15.5],
+                            y: [0, 400],
+                            line: {
+                                color: 'black',
+                                dash: 'solid'
+                            }
+                        },
+                        {
+                            type: 'scatter',
+                            name: 'Standard Fuel Tanks - Maximum',
+                            x: [0, 6.2],
+                            y: [0, 150],
+                            line: {
+                                color: 'black',
+                                dash: 'dash'
+                            }
+                        },
+                        {
+                            type: 'scatter',
+                            name: 'Area 1/Child Seat - Maximum',
+                            x: [0, 7.7],
+                            y: [0, 120],
+                            line: {
+                                color: 'black',
+                                dash: 'longdash'
+                            }
+                        },
+                        {
+                            type: 'scatter',
+                            name: 'Area 2 - Maximum',
+                            x: [0, 3.3],
+                            y: [0, 40],
+                            line: {
+                                color: 'black',
+                                dash: 'dot'
+                            }
+                        }
+                    ]
                 };
-                fuelTanksLoadGraph_C152 = {
-                    type: 'scatter',
-                    name: 'Standard Fuel Tanks - Maximum',
-                    x: [0, 6.2],
-                    y: [0, 150],
-                    line: {
-                        color: 'black',
-                        dash: 'dash'
-                    }
-                };
-                area1LoadGraph_C152 = {
-                    type: 'scatter',
-                    name: 'Area 1/Child Seat - Maximum',
-                    x: [0, 7.7],
-                    y: [0, 120],
-                    line: {
-                        color: 'black',
-                        dash: 'longdash'
-                    }
-                };
-                area2LoadGraph_C152 = {
-                    type: 'scatter',
-                    name: 'Area 2 - Maximum',
-                    x: [0, 3.3],
-                    y: [0, 40],
-                    line: {
-                        color: 'black',
-                        dash: 'dot'
-                    }
+
+                loadingGraphsResultColors = {
+                    C152: [
+                        'rgb(31, 119, 180)',
+                        'rgb(255, 127, 14)',
+                        'rgb(44, 160, 44)',
+                        'rgb(214, 39, 40)'
+                    ]
                 };
 
                 var airplaneLoadingGraph_traceIDs = null;
@@ -382,8 +395,7 @@
                     }
                 };
 
-                pltAirplaneLoadingGraph = Plotly.newPlot('pltAirplaneLoadingGraph', 
-                    [pilotPassengerAndLongRangeFuelTanksLoadGraph_C152, fuelTanksLoadGraph_C152, area1LoadGraph_C152, area2LoadGraph_C152], layout);
+                pltAirplaneLoadingGraph = Plotly.newPlot('pltAirplaneLoadingGraph', loadingGraphs['C152'], layout);
             </script>
         </div>
     </body>
@@ -519,18 +531,28 @@
                 var numTraces = currentLoadGraphData.length;
                 for (let i = 0; i < numTraces; i++) {
                     if (!(i in loadGraphWeightSum)) {
+                        // Enable appearance in legend.
+                        Plotly.update('pltAirplaneLoadingGraph', {'showlegend': true}, {}, i);
+
                         continue;
                     }
 
                     if (!(loadGraphMomentSum[i] > 0.0) && !(loadGraphWeightSum[i] > 0.0)) {
+                        // Enable appearance in legend.
+                        Plotly.update('pltAirplaneLoadingGraph', {'showlegend': true}, {}, i);
+
                         continue;
                     }
+
+                    // Disable appearance in legend.
+                    Plotly.update('pltAirplaneLoadingGraph', {'showlegend': false}, {}, i);
 
                     var loadGraphResult = {
                         name: currentLoadGraphData[i].name.replace(' - Maximum', ''),
                         x: [0, loadGraphMomentSum[i]],
                         y: [0, loadGraphWeightSum[i]],
                         line: {
+                            color: loadingGraphsResultColors['C152'][i],
                             dash: currentLoadGraphData[i].line.dash
                         }
                     };
