@@ -365,7 +365,7 @@
                         C152: [
                             {
                                 type: 'scatter',
-                                name: 'Pilot/Passenger/Long Range Fuel Tanks - Maximum',
+                                name: 'Pilot/Passenger/Long Range Fuel Tanks',
                                 x: [0, 15.5],
                                 y: [0, 400],
                                 line: {
@@ -375,7 +375,7 @@
                             },
                             {
                                 type: 'scatter',
-                                name: 'Standard Fuel Tanks - Maximum',
+                                name: 'Standard Fuel Tanks',
                                 x: [0, 6.2],
                                 y: [0, 150],
                                 line: {
@@ -385,7 +385,7 @@
                             },
                             {
                                 type: 'scatter',
-                                name: 'Area 1/Child Seat - Maximum',
+                                name: 'Area 1/Child Seat',
                                 x: [0, 7.7],
                                 y: [0, 120],
                                 line: {
@@ -395,7 +395,7 @@
                             },
                             {
                                 type: 'scatter',
-                                name: 'Area 2 - Maximum',
+                                name: 'Area 2',
                                 x: [0, 3.3],
                                 y: [0, 40],
                                 line: {
@@ -595,7 +595,7 @@
 
                     // Loading result, single point and not appearing in legend.
                     var loadGraphResult = {
-                        name: currentLoadGraphData[i].name.replace(' - Maximum', ''),
+                        name: currentLoadGraphData[i].name,
                         x: [loadGraphMomentSum[i]],
                         y: [loadGraphWeightSum[i]],
                         marker: loadingGraphsResultMarkers['C152'][i],
