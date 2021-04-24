@@ -604,6 +604,39 @@
 
                     airplaneLoadingGraph_traceIDs.push(Plotly.addTraces('pltAirplaneLoadingGraph', loadGraphResult));
                 }
+
+                // Update loading summary table.
+                // Clear table.
+                var loadingTable = document.getElementById('tblLoadingSummary');
+                for (let i = loadingTable.rows.length - 1; i > 0; i--) {
+                    loadingTable.deleteRow(i);
+                }
+                // Add entries.
+                for (let i = 0; i < numTraces; i++) {
+                    var row = document.createElement('tr');
+                    
+                    var description = document.createElement('td');
+                    description.appendChild(document.createTextNode(currentLoadGraphData[i].name));
+                    row.appendChild(description);
+
+                    var weight = document.createElement('td');
+                    var percentage = document.createElement('td');
+                    if (!(i in loadGraphWeightSum) ||
+                        (!(loadGraphMomentSum[i] > 0.0) && !(loadGraphWeightSum[i] > 0.0))) {
+                        weight.appendChild(document.createTextNode('0.0'));
+                        percentage.appendChild(document.createTextNode('0%'));
+                    } else {
+                        weight.appendChild(document.createTextNode(loadGraphWeightSum[i].toFixed(2)));
+                        percentage.appendChild(document.createTextNode((100.0 * loadGraphWeightSum[i] / loadingGraphs['C152'][i]['y'][1]).toFixed(0) + '%'));
+                    }
+                    row.appendChild(weight);
+                    row.appendChild(percentage);
+
+                    var notes = document.createElement('td');
+                    row.appendChild(notes);
+
+                    loadingTable.appendChild(row);
+                }
             }
         });
     </script>
