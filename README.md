@@ -1,7 +1,7 @@
 # aircraft-weight-and-balance
 Simple web snippets for computing and visualizing general aviation (GA) aircrafts weight and balance
 
-Based on [aircraft-weight-and-balance](https://github.com/cass-support/aircraft-weight-and-balance) repository.
+Based on [cass-support/aircraft-weight-and-balance](https://github.com/cass-support/aircraft-weight-and-balance) repository.
 
 - Added Piper PA-28-161 Cadet with metric units and Jet A-1 fuel
 
