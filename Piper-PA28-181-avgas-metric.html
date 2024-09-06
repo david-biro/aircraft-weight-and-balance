@@ -1,0 +1,657 @@
+<html>
+    <head>
+        <title>Piper PA28-181 Weight & Balance</title>
+        <script src="https://cdn.plot.ly/plotly-1.58.4.min.js"></script>
+        <script>
+            var aircraftSpecifications = {
+                PA28: {
+                    max_ramp_weight: 1160,              // kg, according to POH
+                    max_takeoff_weight: 1156.66,
+                    max_landing_weight: 1156.66,
+                    arms: {
+                        pilot: 204,                     // cm
+                        passenger1: 204,
+                        area1: 300,
+                        area2: 363,
+                        fuel: 241,
+                    },
+                    arms_loading_graph_contrib: {
+                        pilot: 0,
+                        passenger1: 0,
+                        fuel_long_range: 0,
+                        fuel: 1,
+                        area1: 2,
+                        area2: 3,
+                    }
+                },
+            };
+
+            var aircraftDB = {
+                'SE-GPL': {
+                    model: 'PA28',
+                    year: 1976,
+                    last_update: '00/00/0000',
+                    fuel_type: 'avgas',
+                    basic_empty_weight: 699.07,        // kg
+                    center_of_mass: 222.25             // cm, Basic empty weight, Arm Aft Datum
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div>
+            <fieldset>
+                <legend>Aircraft Data</legend>
+
+                <table>
+                <table>
+                    <tr>
+                        <td><label for="call_sign">Call Sign</label></td>
+                        <td>
+                            <select name="call_sign" id="call_sign">
+                                <option>SE-GPL</option>
+                            </select>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><label>Latest Update</label></td>
+                        <td><div id="aircraft_last_update"></div></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><label>Fuel type</label></td>
+                        <td><div id="aircraft_fuel_type"></div></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><label>Basic Empty Weight</label></td>
+                        <td><div id="aircraft_basic_empty_weight"></div></td>
+                        <td>(kg)</td>
+                    </tr>
+                    <tr>
+                        <td><label>Center of Mass</label></td>
+                        <td><div id="aircraft_center_of_mass"></div></td>
+                        <td>(cm)</td>
+                    </tr>
+                    <tr>
+                        <td><label>Moment</label></td>
+                        <td><div id="aircraft_moment"></div></td>
+                        <td>(kg-cm/1000)</td>
+                    </tr>
+                </table>
+            </fieldset>
+
+            <script>
+                function update_aircraft_data() {
+                    // If call sign exists in DB.
+                    var callSign = document.getElementById('call_sign').value;
+                    if (!(callSign in aircraftDB)) {
+                        return;
+                    }
+
+                    // Update general aircraft data.
+                    document.getElementById('aircraft_last_update').innerText = aircraftDB[callSign]['last_update'];
+                    document.getElementById('aircraft_basic_empty_weight').innerText = aircraftDB[callSign]['basic_empty_weight'];
+                    document.getElementById('aircraft_fuel_type').innerText = aircraftDB[callSign]['fuel_type'];
+                    document.getElementById('aircraft_center_of_mass').innerText = aircraftDB[callSign]['center_of_mass'];
+                    document.getElementById('aircraft_moment').innerText = (aircraftDB[callSign]['basic_empty_weight'] * aircraftDB[callSign]['center_of_mass'] / 1000.0).toFixed(2);
+                }
+
+                window.addEventListener('load', (event) => {
+                    update_aircraft_data();
+                });
+
+                document.getElementById('call_sign').addEventListener('change', (event) => {
+                    update_aircraft_data();
+                });
+            </script>
+        </div>
+        <div>
+            <fieldset>
+                <legend>Load Data</legend>
+
+                <table>
+                    <tr>
+                        <td></td>
+                        <td>Weight</td>
+                        <td>Units</td>
+                        <td>Arm (cm)</td>
+                        <td>Moment (kg-cm/1000)</td>
+                    </tr>
+                    <tr>
+                        <td><label for="txtPilotWeight">Pilot</label></td>
+                        <td><input type="number" id="txtPilotWeight" name="pilot_weight" /></td>
+                        <td>
+                            <select id="pilot_weight_units">
+                                <option value="kg">kg</option>
+                                <option value="lbs">lbs</option>
+                            </select>
+                        </td>
+                        <td>204</td>
+                        <td><div id="pilot_moment">0.00</div></td>
+                    </tr>
+                    <tr>
+                        <td><label for="txtPassenger1Weight">Passenger 1</label></td>
+                        <td><input type="number" id="txtPassenger1Weight" name="passenger1_weight" /></td>
+                        <td>
+                            <select id="passenger1_weight_units">
+                                <option value="kg">kg</option>
+                                <option value="lbs">lbs</option>
+                            </select>
+                        </td>
+                        <td>204</td>
+                        <td><div id="passenger1_moment">0.00</div></td>
+                    </tr>
+                    <tr>
+                        <td><label for="txtArea1Weight">Area 1 / Child Seat</label></td>
+                        <td><input type="number" id="txtArea1Weight" name="area1_weight" /></td>
+                        <td>
+                            <select id="area1_weight_units">
+                                <option value="kg">kg</option>
+                                <option value="lbs">lbs</option>
+                            </select>
+                        </td>
+                        <td>300</td>
+                        <td><div id="area1_moment">0.00</div></td>
+                    </tr>
+                    <tr>
+                        <td><label for="txtArea2Weight">Area 2</label></td>
+                        <td><input type="number" id="txtArea2Weight" name="area2_weight" /></td>
+                        <td>
+                            <select id="area2_weight_units">
+                                <option value="kg">kg</option>
+                                <option value="lbs">lbs</option>
+                            </select>
+                        </td>
+                        <td>363</td>
+                        <td><div id="area2_moment">0.00</div></td>
+                    </tr>
+                    <tr>
+                        <td><label for="txtFuelWeight">Fuel</label></td>
+                        <td><input type="number" id="txtFuelWeight" name="fuel_weight" /></td>
+                        <td>
+                            <select id="fuel_weight_units">
+                                <option value="liter">Liter</option>
+                                <option value="usg">US Gallon</option>
+                            </select>
+                        </td>
+                        <td>241</td>
+                        <td><div id="fuel_moment">0.00</div></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5"><hr /></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Summary</td>
+                        <td colspan="4"></td>
+                    </tr>
+                    <tr>
+                        <td>Useful Load</td>
+                        <td><div id="load_weight_summary">0.00</div></td>
+                        <td>kg</td>
+                        <td><div id="load_arm_summary">0.00</div></td>
+                        <td><div id="load_moment_summary">0.00</div></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Aircraft</td>
+                        <td style="font-weight: bold;"><div id="aircraft_weight_summary">0.00</div></td>
+                        <td style="font-weight: bold;">kg</td>
+                        <td style="font-weight: bold;"><div id="aircraft_arm_summary">0.00</div></td>
+                        <td style="font-weight: bold;"><div id="aircraft_moment_summary">0.00</div></td>
+                    </tr>
+                    <tr>
+                        <td><button id="btnCalculate" name="calculate">Calculate</button></td>
+                        <td colspan="4"></td>
+                    </tr>
+                </table>
+            </fieldset>
+        </div>
+        
+        <div>
+            <fieldset>
+                <legend>Center-of-Gravity Limits Details</legend>
+
+                <div id="pltAirplaneCGLocation" style="width:600px;height:400px;"></div>
+
+                <script>
+					// According to POH, 6.3 C.G. RANGE AND WEIGHT
+                    var airplaneCGEnvelope_PA28 = [{
+                            type: 'scatter',
+                            name: 'Normal Category',
+                            x: [208.28, 208.28, 224.79, 236.22, 236.22, 208.28],
+                            y: [544.31, 929.86, 1156.66, 1156.66, 544.31, 544.31],
+                        },
+                        {
+                            type: 'scatter',
+                            name: 'Utility Category',
+                            x: [208.28, 208.28, 211.38, 236.22, 236.22, 208.28],
+                            y: [544.31, 929.86, 966.152, 966.152, 544.31, 544.31],
+                        }];
+                    
+
+                    var airplaneCGEnvelope_result = {
+                        x: [0],
+                        y: [0],
+                        marker: {
+                            symbol: 'triangle-up', 
+                            size: 10, 
+                            color: 'red', 
+                            line: { width: 1, color: 'black'}
+                        }
+                    };
+
+                    var airplaneCGEnvelope_traceID = null;
+
+                    var layout = {
+                        title: 'Piper PA28-181 - C.G. Limits',
+                        showlegend: true,
+                        xaxis: {
+                            title: 'C.G. Location [cm aft of datum]',
+                            range: [205, 238],
+                            tickmode: 'linear',
+                            tick0: 30,
+                            dtick: 5
+                        },
+                        yaxis: {
+                            title: 'Loaded Airplane Weight (kg)',
+                            range: [450, 1250],
+                            tickmode: 'linear',
+                            tick0: 1000,
+                            dtick: 100
+                        }
+                    };
+
+                    pltAirplaneCGLocation = Plotly.newPlot('pltAirplaneCGLocation', airplaneCGEnvelope_PA28, layout);
+                </script>
+            </fieldset>
+        </div>
+
+        <div>
+            <fieldset>
+                <legend>Center-of-Gravity Moment Envelope Details</legend>
+
+                <div id="pltAirplaneCGMomentEnvelope" style="width:600px;height:400px;"></div>
+
+
+                <script>
+                
+                    var airplaneCGMomentEnvelope_PA28 = [{
+                        type: 'scatter',
+                        name: 'Normal Category',
+                        x: [193.672, 257.067, 273.226, 219.652],
+                        y: [929.864, 1156.66, 1156.66, 929.864],
+                    },
+                    {
+                        type: 'scatter',
+                        name: 'Utility Category',
+                        x: [193.672, 203.684, 228.224, 219.652],
+                        y: [929.864, 966.152, 966.152, 929.864],
+                    }];
+
+                    var airplaneCGMomentEnvelope_result = {
+                        x: [0],
+                        y: [0],
+                        marker: {
+                            symbol: 'triangle-up', 
+                            size: 10, 
+                            color: 'red', 
+                            line: { width: 1, color: 'black'}
+                        }
+                    }
+
+                    var airplaneCGMomentEnvelope_traceID = null;
+
+                    var layout = {
+                        title: 'Piper PA28-181 - C.G. Moment Envelope',
+                        showlegend: true,
+                        xaxis: {
+                            title: 'Loaded Airplane Moment (kg-cm/1000)',
+                            range: [190, 280],
+                            tickmode: 'linear',
+                            tick0: 30,
+                            dtick: 20
+                        },
+                        yaxis: {
+                            title: 'Loaded Airplane Weight (kg)',
+                            range: [900, 1180],
+                            tickmode: 'linear',
+                            tick0: 100,
+                            dtick: 50
+                        }
+                    };
+
+                    pltAirplaneCGMomentEnvelope = Plotly.newPlot('pltAirplaneCGMomentEnvelope', airplaneCGMomentEnvelope_PA28, layout);
+                </script>
+            </fieldset>
+        </div>
+
+        <div>
+            <fieldset>
+                <legend>Loading Details</legend>
+
+                <div id="pltAirplaneLoadingGraph" style="width:650px;height:400px;"></div>
+
+                <table id="tblLoadingSummary">
+                    <tr>
+                        <td style="font-weight: bold;">Description</td>
+                        <td style="font-weight: bold;">Weight (kg)</td>
+                        <td style="font-weight: bold;">Percentage</td>
+                        <td style="font-weight: bold;">Notes</td>
+                    </tr>
+                    <tr>
+                        <td>Pilot/Passenger/Long Range Fuel Tanks</td>
+                        <td>0.00</td>
+                        <td>0%</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Standard Fuel Tanks</td>
+                        <td>0.00</td>
+                        <td>0%</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Area 1/Child Seat</td>
+                        <td>0.00</td>
+                        <td>0%</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Area 2</td>
+                        <td>0.00</td>
+                        <td>0%</td>
+                        <td></td>
+                    </tr>
+                </table>
+
+                <script>
+                    loadingGraphs = {
+                        PA28: [
+                            {
+                                type: 'scatter',
+                                name: 'Pilot/Front PAX',
+                                x: [0, 39],
+                                y: [0, 190],
+                                line: {
+                                    color: 'black',
+                                    dash: 'solid'
+                                }
+                            },
+                            {
+                                type: 'scatter',
+                                name: 'Fuel Tank (Avgas)',
+                                x: [0, 31],
+                                y: [0, 130],
+                                line: {
+                                    color: 'black',
+                                    dash: 'dash'
+                                }
+                            },
+                            {
+                                type: 'scatter',
+                                name: 'Area 1/Child Seat',
+                                x: [0, 46],
+                                y: [0, 151],
+                                line: {
+                                    color: 'black',
+                                    dash: 'longdash'
+                                }
+                            },
+                            {
+                                type: 'scatter',
+                                name: 'Area 2',
+                                x: [0, 33],
+                                y: [0, 90],
+                                line: {
+                                    color: 'black',
+                                    dash: 'dot'
+                                }
+                            }
+                        ]
+                    };
+
+                    loadingGraphsResultMarkers = {
+                        PA28: [
+                            {
+                                symbol: 'circle-open', 
+                                size: 10, 
+                                color: 'blue'
+                            },
+                            {
+                                symbol: 'diamond-open', 
+                                size: 10, 
+                                color: 'blue'
+                            },
+                            {
+                                symbol: 'x-open', 
+                                size: 10, 
+                                color: 'blue'
+                            },
+                            {
+                                symbol: 'triangle-up-open', 
+                                size: 10, 
+                                color: 'blue'
+                            },
+                        ]
+                    };
+
+                    var airplaneLoadingGraph_traceIDs = null;
+
+                    var layout = {
+                        title: 'Piper PA28 - Loading Graph',
+                        showlegend: true,
+                        xaxis: {
+                            title: 'Load Moment (kg-cm/1000)',
+                            range: [0, 55],
+                            tickmode: 'linear',
+                            tick0: 0,
+                            dtick: 10
+                        },
+                        yaxis: {
+                            title: 'Load Weight (kg)',
+                            range: [0, 210],
+                            tickmode: 'linear',
+                            tick0: 100,
+                            dtick: 50
+                        }
+                    };
+
+                    pltAirplaneLoadingGraph = Plotly.newPlot('pltAirplaneLoadingGraph', loadingGraphs['PA28'], layout);
+                </script>
+            </fieldset>
+        </div>
+    </body>
+    <script>
+        function get_weight_in_kg(value, units, fuel_type) {
+            if (units == 'lbs') {
+                return value * 0.45359;
+            }
+        
+            if (units == 'usg') {
+                if (fuel_type == "avgas")
+                    // Correct only for Avgas.
+                    // See http://mye6b.com/Fuel for more details.
+                    return value * 2.81;
+                else 
+                    // JetA1
+                    return value * 3.04;
+            } else if (units == 'liter') {
+                if (fuel_type == "avgas")
+                    // Correct only for Avgas.
+                    // See http://mye6b.com/Fuel for more details.
+                    return value * 0.74;
+                else
+                    // JetA1
+                    return value * 0.804;
+            } 
+
+            // Unrecognized options, should be handled.
+            return value;
+        }
+
+        var btnCalculate = document.getElementById('btnCalculate');
+        btnCalculate.addEventListener('click', function() {
+            // Get current aircraft call sign from DB.
+            var callSign = document.getElementById('call_sign').value;
+
+            // Compute total moment and mass, check if inside envelope.
+            // For PA28.
+            if (true) {
+                var loadData = {
+                    'pilot': Number(document.getElementById('txtPilotWeight').value),
+                    'passenger1': Number(document.getElementById('txtPassenger1Weight').value),
+                    'area1': Number(document.getElementById('txtArea1Weight').value),
+                    'area2': Number(document.getElementById('txtArea2Weight').value),
+                    'fuel': Number(document.getElementById('txtFuelWeight').value),
+                };
+
+                // Reset summary for loading graph.
+                var loadGraphWeightSum = {};
+                var loadGraphMomentSum = {};
+
+                // Compute each element weight & moment/1000 contribution and 
+                // total sum.
+                var load_weight = 0.0;
+                var load_moment = 0.0;
+                for (const key in loadData) {
+                    moment_string = '';
+
+                    if (Number.isFinite(loadData[key])) {
+                        // Get weight in lbs, convert if needed.
+                        var units = document.getElementById(key + '_weight_units').value;
+                        weight_in_kg = loadData[key];
+                        fuel_type = loadData[key];
+                        
+                        if (units != 'kg') {
+                            weight_in_kg = get_weight_in_kg(weight_in_kg, units, fuel_type);
+                        }
+
+                        moment = weight_in_kg * aircraftSpecifications['PA28']['arms'][key] / 1000.0;
+
+                        load_weight += weight_in_kg;
+                        load_moment += moment;
+
+                        // Add contribution to loading graph summary.
+                        if (!(aircraftSpecifications['PA28']['arms_loading_graph_contrib'][key] in loadGraphWeightSum)) {
+                            loadGraphWeightSum[aircraftSpecifications['PA28']['arms_loading_graph_contrib'][key]] = 0.0;
+                        }
+                        if (!(aircraftSpecifications['PA28']['arms_loading_graph_contrib'][key] in loadGraphMomentSum)) {
+                            loadGraphMomentSum[aircraftSpecifications['PA28']['arms_loading_graph_contrib'][key]] = 0.0;
+                        }
+
+                        loadGraphWeightSum[aircraftSpecifications['PA28']['arms_loading_graph_contrib'][key]] += weight_in_kg;
+                        loadGraphMomentSum[aircraftSpecifications['PA28']['arms_loading_graph_contrib'][key]] += moment;
+
+                        moment_string = moment.toFixed(2);
+                    }
+
+                    document.getElementById(key + '_moment').innerText = moment_string;
+                }
+
+                // Update table with numerical result.
+                document.getElementById('load_weight_summary').innerText = load_weight.toFixed(2);
+                document.getElementById('load_arm_summary').innerText = (load_moment / load_weight * 1000.0).toFixed(2);
+                document.getElementById('load_moment_summary').innerText = load_moment.toFixed(2);
+
+                // Compute aircraft summary.
+                var basic_aircraft_weight = aircraftDB[callSign]['basic_empty_weight'];
+                var basic_aircraft_com = aircraftDB[callSign]['center_of_mass'];
+
+                var aircraft_weight = load_weight + basic_aircraft_weight;
+                var aircraft_moment = load_moment + basic_aircraft_weight * basic_aircraft_com / 1000.0;
+                var aircraft_arm = aircraft_moment / aircraft_weight * 1000.0;
+
+                // Update table with numerical result.
+                document.getElementById('aircraft_weight_summary').innerText = aircraft_weight.toFixed(2);
+                document.getElementById('aircraft_arm_summary').innerText = aircraft_arm.toFixed(2);
+                document.getElementById('aircraft_moment_summary').innerText = aircraft_moment.toFixed(2);
+
+                // Remove recent graphs.
+                if (airplaneCGEnvelope_traceID != null) {
+                    Plotly.deleteTraces('pltAirplaneCGLocation', -1);
+                    airplaneCGEnvelope_traceID = null;
+                }
+
+                if (airplaneCGMomentEnvelope_traceID != null) {
+                    Plotly.deleteTraces('pltAirplaneCGMomentEnvelope', -1);
+                    airplaneCGMomentEnvelope_traceID = null;
+                }
+
+                if (airplaneLoadingGraph_traceIDs != null) {
+                    for (let i=0; i<airplaneLoadingGraph_traceIDs.length; i++) {
+                        Plotly.deleteTraces('pltAirplaneLoadingGraph', -1);
+                    }
+
+                    airplaneLoadingGraph_traceIDs = null;
+                }
+
+                // Update graphs with result.
+                // Add result to plots. 
+                airplaneCGEnvelope_result['name'] = callSign;
+                airplaneCGEnvelope_result['x'][0] = 1000.0 * aircraft_moment / aircraft_weight;
+                airplaneCGEnvelope_result['y'][0] = aircraft_weight;
+                airplaneCGEnvelope_traceID = Plotly.addTraces('pltAirplaneCGLocation', airplaneCGEnvelope_result);
+
+                airplaneCGMomentEnvelope_result['name'] = callSign;
+                airplaneCGMomentEnvelope_result['x'][0] = aircraft_moment;
+                airplaneCGMomentEnvelope_result['y'][0] = aircraft_weight;
+                airplaneCGMomentEnvelope_traceID = Plotly.addTraces('pltAirplaneCGMomentEnvelope', airplaneCGMomentEnvelope_result);
+
+                airplaneLoadingGraph_traceIDs = [];
+                var currentLoadGraphData = document.getElementById('pltAirplaneLoadingGraph').data;
+                var numTraces = currentLoadGraphData.length;
+                for (let i = 0; i < numTraces; i++) {
+                    if (!(i in loadGraphWeightSum) ||
+                        (!(loadGraphMomentSum[i] > 0.0) && !(loadGraphWeightSum[i] > 0.0))) {
+                        continue;
+                    }
+
+                    // Loading result, single point and not appearing in legend.
+                    var loadGraphResult = {
+                        name: currentLoadGraphData[i].name,
+                        x: [loadGraphMomentSum[i]],
+                        y: [loadGraphWeightSum[i]],
+                        marker: loadingGraphsResultMarkers['PA28'][i],
+                        showlegend: false
+                    };
+
+                    airplaneLoadingGraph_traceIDs.push(Plotly.addTraces('pltAirplaneLoadingGraph', loadGraphResult));
+                }
+
+                // Update loading summary table.
+                // Clear table.
+                var loadingTable = document.getElementById('tblLoadingSummary');
+                for (let i = loadingTable.rows.length - 1; i > 0; i--) {
+                    loadingTable.deleteRow(i);
+                }
+                // Add entries.
+                for (let i = 0; i < numTraces; i++) {
+                    var row = document.createElement('tr');
+                    
+                    var description = document.createElement('td');
+                    description.appendChild(document.createTextNode(currentLoadGraphData[i].name));
+                    row.appendChild(description);
+
+                    var weight = document.createElement('td');
+                    var percentage = document.createElement('td');
+                    if (!(i in loadGraphWeightSum) ||
+                        (!(loadGraphMomentSum[i] > 0.0) && !(loadGraphWeightSum[i] > 0.0))) {
+                        weight.appendChild(document.createTextNode('0.0'));
+                        percentage.appendChild(document.createTextNode('0%'));
+                    } else {
+                        weight.appendChild(document.createTextNode(loadGraphWeightSum[i].toFixed(2)));
+                        percentage.appendChild(document.createTextNode((100.0 * loadGraphWeightSum[i] / loadingGraphs['PA28'][i]['y'][1]).toFixed(0) + '%'));
+                    }
+                    row.appendChild(weight);
+                    row.appendChild(percentage);
+
+                    var notes = document.createElement('td');
+                    row.appendChild(notes);
+
+                    loadingTable.appendChild(row);
+                }
+            }
+        });
+    </script>
+</html>
